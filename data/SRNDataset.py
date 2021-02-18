@@ -5,7 +5,7 @@ import glob
 import imageio
 import numpy as np
 from util import get_image_to_tensor_balanced, get_mask_to_tensor
-
+import pdb
 
 class SRNDataset(torch.utils.data.Dataset):
     """
@@ -30,6 +30,7 @@ class SRNDataset(torch.utils.data.Dataset):
 
         print("Loading SRN dataset", self.base_path, "name:", self.dataset_name)
         self.stage = stage
+        # pdb.set_trace()
         assert os.path.exists(self.base_path)
 
         is_chair = "chair" in self.dataset_name

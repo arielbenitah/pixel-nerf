@@ -9,7 +9,7 @@ import torch.autograd.profiler as profiler
 from util import repeat_interleave
 import os
 import warnings
-
+import pdb
 
 class PixelNeRFNet(torch.nn.Module):
     def __init__(self, conf, stop_encoder_grad=False):
@@ -71,19 +71,21 @@ class PixelNeRFNet(torch.nn.Module):
         self.mlp_fine = make_mlp(
             conf["mlp_fine"], d_in, d_latent, d_out=d_out, allow_empty=True
         )
-        self.mlp_far = make_mlp(
-            conf["mlp_far"], d_in, d_latent, d_out=d_out, allow_empty=True
-        )
+        # self.mlp_far = make_mlp(conf["mlp_far"], d_in, d_latent, d_out=d_out, allow_empty=True)
         # Note: this is world -> camera, and bottom row is omitted
-        self.register_buffer("poses", torch.empty(1, 3, 4), persistent=False)
-        self.register_buffer("image_shape", torch.empty(2), persistent=False)
+        # self.register_buffer("poses", torch.empty(1, 3, 4), persistent=False)
+        self.register_buffer("poses", torch.empty(1, 3, 4))
+        # self.register_buffer("image_shape", torch.empty(2), persistent=False)
+        self.register_buffer("image_shape", torch.empty(2))
 
         self.d_in = d_in
         self.d_out = d_out
         self.d_latent = d_latent
-        self.register_buffer("focal", torch.empty(1, 2), persistent=False)
+        # self.register_buffer("focal", torch.empty(1, 2), persistent=False)
+        self.register_buffer("focal", torch.empty(1, 2))
         # Principal point
-        self.register_buffer("c", torch.empty(1, 2), persistent=False)
+        # self.register_buffer("c", torch.empty(1, 2), persistent=False)
+        self.register_buffer("c", torch.empty(1, 2))
 
         self.num_objs = 0
         self.num_views_per_obj = 1

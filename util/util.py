@@ -8,7 +8,7 @@ import torch.nn.functional as F
 import functools
 import math
 import warnings
-
+import pdb
 
 def image_float_to_uint8(img):
     """
@@ -117,6 +117,9 @@ def gen_grid(*args, ij_indexing=False):
 
 def unproj_map(width, height, f, c=None, device="cpu"):
     """
+    03..12.2021 - Ariel B: Those are vectors from camera center to pixel coordinates in camera coordinates
+    
+
     Get camera unprojection map for given image size.
     [y,x] of output tensor will contain unit vector of camera ray of that pixel.
     :param width image width
@@ -242,9 +245,14 @@ def bbox_sample(bboxes, num_pix):
 
 def gen_rays(poses, width, height, focal, z_near, z_far, c=None, ndc=False):
     """
+    03.12.2021 - Ariel B: return the mapping of each ray for all pixels in each camera as a tensor:
+    B: num views
+    H x W: num of pixels for one view
+    8: camera center (x3), ray direction (x3), z_near (x1), z_far(x1)  
     Generate camera rays
     :return (B, H, W, 8)
     """
+    # pdb.set_trace()
     num_images = poses.shape[0]
     device = poses.device
     cam_unproj_map = (

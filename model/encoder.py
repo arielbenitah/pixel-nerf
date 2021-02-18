@@ -8,7 +8,7 @@ import torchvision
 import util
 from model.custom_encoder import ConvEncoder
 import torch.autograd.profiler as profiler
-
+import pdb
 
 class SpatialEncoder(nn.Module):
     """
@@ -67,14 +67,15 @@ class SpatialEncoder(nn.Module):
             self.model.avgpool = nn.Sequential()
             self.latent_size = [0, 64, 128, 256, 512, 1024][num_layers]
 
+        #pdb.set_trace()
         self.num_layers = num_layers
         self.index_interp = index_interp
         self.index_padding = index_padding
         self.upsample_interp = upsample_interp
-        self.register_buffer("latent", torch.empty(1, 1, 1, 1), persistent=False)
-        self.register_buffer(
-            "latent_scaling", torch.empty(2, dtype=torch.float32), persistent=False
-        )
+        # self.register_buffer("latent", torch.empty(1, 1, 1, 1), persistent=False)
+        self.register_buffer("latent", torch.empty(1, 1, 1, 1))
+        # self.register_buffer("latent_scaling", torch.empty(2, dtype=torch.float32), persistent=False)
+        self.register_buffer("latent_scaling", torch.empty(2, dtype=torch.float32))
         # self.latent (B, L, H, W)
 
     def index(self, uv, cam_z=None, image_size=(), z_bounds=None):
@@ -114,6 +115,7 @@ class SpatialEncoder(nn.Module):
         :param x image (B, C, H, W)
         :return latent (B, latent_size, H, W)
         """
+        # pdb.set_trace() 
         if self.feature_scale != 1.0:
             x = F.interpolate(
                 x,
@@ -146,7 +148,7 @@ class SpatialEncoder(nn.Module):
             if self.num_layers > 4:
                 x = self.model.layer4(x)
                 latents.append(x)
-
+            #pdb.set_trace()
             self.latents = latents
             align_corners = None if self.index_interp == "nearest " else True
             latent_sz = latents[0].shape[-2:]
@@ -158,6 +160,7 @@ class SpatialEncoder(nn.Module):
                     align_corners=align_corners,
                 )
             self.latent = torch.cat(latents, dim=1)
+        # pdb.set_trace()
         self.latent_scaling[0] = self.latent.shape[-1]
         self.latent_scaling[1] = self.latent.shape[-2]
         self.latent_scaling = self.latent_scaling / (self.latent_scaling - 1) * 2.0
