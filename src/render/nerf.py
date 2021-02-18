@@ -88,12 +88,10 @@ class NeRFRenderer(torch.nn.Module):
         self.sched = sched
         if sched is not None and len(sched) == 0:
             self.sched = None
-        self.register_buffer(
-            "iter_idx", torch.tensor(0, dtype=torch.long), persistent=True
-        )
-        self.register_buffer(
-            "last_sched", torch.tensor(0, dtype=torch.long), persistent=True
-        )
+        # self.register_buffer("iter_idx", torch.tensor(0, dtype=torch.long), persistent=True)
+        self.register_buffer("iter_idx", torch.tensor(0, dtype=torch.long))
+        # self.register_buffer("last_sched", torch.tensor(0, dtype=torch.long), persistent=True)
+        self.register_buffer("last_sched", torch.tensor(0, dtype=torch.long))
 
     def sample_coarse(self, rays):
         """

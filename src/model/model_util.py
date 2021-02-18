@@ -1,8 +1,9 @@
 from .encoder import SpatialEncoder, ImageEncoder
 from .resnetfc import ResnetFC
-
+import pdb
 
 def make_mlp(conf, d_in, d_latent=0, allow_empty=False, **kwargs):
+    # pdb.set_trace()
     mlp_type = conf.get_string("type", "mlp")  # mlp | resnet
     if mlp_type == "mlp":
         net = ImplicitNet.from_conf(conf, d_in + d_latent, **kwargs)
